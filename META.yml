@@ -1,0 +1,27 @@
+---
+abstract: 'interface to secure password storage(s)'
+author:
+  - 'Marcin Kasperski <Marcin.Kasperski@mekk.waw.pl>'
+build_requires:
+  Passwd::Keyring::Memory: 0.2
+  Test::More: 0
+configure_requires:
+  Module::Build: 0.38
+dynamic_config: 1
+generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.110440'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Passwd-Keyring-Auto
+provides:
+  Passwd::Keyring::Auto:
+    file: lib/Passwd/Keyring/Auto.pm
+    version: 0.21
+recommends:
+  Passwd::Keyring::Gnome: 0.2
+requires:
+  Passwd::Keyring::Memory: 0.2
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.21
