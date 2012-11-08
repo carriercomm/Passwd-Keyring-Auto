@@ -1,5 +1,8 @@
 Revision history for Keyring::Auto
 
+0.24    2012-11-08
+        Clarifying meaning of app and group parameters.
+
 0.23    2012-11-08
         Documented keyring backends API (L<Passwd::Keyring::KeyringAPI>).
         Tests properly clean created passwords.

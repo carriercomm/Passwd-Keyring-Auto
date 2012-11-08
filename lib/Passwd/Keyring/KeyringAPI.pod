@@ -41,21 +41,31 @@ defaults). Two of those are standarized:
 
 =back
 
-Both should be used, if possible, to label the passwords in secure
-storage, so the end user is able to recognize and identify them while
-using storage-specific interfaces (for example KWallet GUI or
-Seahorse). In case backend API has no such labelling, those params can
-be ignored.
+C<app> should be used as the calling application name in any
+interactive prompts, if they may happen (for example in KDEWallet's
+"Application X is asking to ..." prompt).  If possible, it should also
+be used in some comment or label field of secure storage, but B<not
+inside a key> (it should be possible to save the password under one
+app name, and recover using another app name, after all a few apps may
+share some password).
 
-If they are missing, some sensible defaults should be applied (like
-C<Passwd::Keyring> for application name).
+C<group> should be used B<to separate the passwords> (entries for the
+password of the same user in the same domain, but with different
+C<group>, should be separate), and - if only possible - to label
+the password in secure storage. Preferrable implementation is to
+use C<group> for folder name if secure storage has some notion
+of folders.
+
+If C<app> and/or C<group> are not specified, some sensible defaults
+should be applied (like C<Passwd::Keyring::Backend> for application name
+and C<Passwd::Keyring::Passwords> for group).
 
 Backend is free to handle any other named arguments, but should function
 properly if they are omitted.
 
 =head2 set_password
 
-    $keyring->set_password("John", "verysecret", "http://gmail.com");
+    $keyring->set_password("John", "verysecret", "gmail.com");
 
 Persistently set and save the password (or update previously saved password).
 
@@ -74,14 +84,23 @@ The method takes 3 arguments:
 In case underlying API places strict requirements on format of any of those values, the backend
 should appropriately modify them (escape, prefix, wrap, ...) to be as forgiving, as possible.
 
-The only strict requirement is that C<get_password> appropriately matches those operation, and
-that different C<user_id> or C<password_domain> leads to separate password.
+The only strict requirement is that C<get_password> appropriately
+matches those operation, and that different C<user_id> or
+C<password_domain> (or C<group> given in constructor) leads to
+separate password.
 
 If possible, password should be labelled using parameters set in the constructor.
 
+=over
+
+Actual key for the password should be built from C<group> given in C<new>, C<password_domain>
+and C<user_id>. Changing any of those params should mean separate password.
+
+=back
+
 =head2 get_password
 
-    $keyring->get_password("John", "some password identifier");
+    $keyring->get_password("John", "gmail.com");
 
 Reads previously saved password. The routine takes two arguments:
 
@@ -94,17 +113,9 @@ Reads previously saved password. The routine takes two arguments:
 =back
 
 and should recover the exact password which was saved with the same C<user_id> and C<password_domain>
-by earlier call to C<set_password>.
+(and C<group>) by earlier call to C<set_password>.
 
 In case no such password was saved, the method should return C<undef>.
-
-=over
-
-As secure storege APIs vary, we do not specify whether changing C<app> or C<folder>
-in constructor parameters may lead to separate password entry. It is recommended
-they are used only as labels.
-
-=back
 
 
 
