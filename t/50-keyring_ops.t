@@ -9,7 +9,7 @@ BEGIN { use_ok("Passwd::Keyring::Auto"); }
 
 # Method presence
 {
-    my $keyring = Passwd::Keyring::Auto::get_keyring();
+    my $keyring = Passwd::Keyring::Auto::get_keyring(app_name=>"Passwd::Keyring::Auto unit tests", group=>"test 50");
     can_ok($keyring, "set_password");
     can_ok($keyring, "get_password");
     can_ok($keyring, "is_persistent");
@@ -17,7 +17,7 @@ BEGIN { use_ok("Passwd::Keyring::Auto"); }
 
 # Simple store&read plus rewriting check    
 {
-    my $keyring = Passwd::Keyring::Auto::get_keyring();
+    my $keyring = Passwd::Keyring::Auto::get_keyring(app_name=>"Passwd::Keyring::Auto unit tests", group=>"test 50");
     #isa_ok($keyring, 'Keyring');
     $keyring->set_password("testuser", "testpwd", "testapp");
     ok( "testpwd" eq $keyring->get_password("testuser", "testapp") );
@@ -39,7 +39,7 @@ BEGIN { use_ok("Passwd::Keyring::Auto"); }
                                   "----->>>>",
                                   "[in]");
 
-    my $keyring1 = Passwd::Keyring::Auto::get_keyring();
+    my $keyring1 = Passwd::Keyring::Auto::get_keyring(app_name=>"Passwd::Keyring::Auto unit tests", group=>"test 50");
     #isa_ok($keyring1, 'Keyring');
     foreach my $idx (0 .. $#users) {
         $keyring1->set_password($users[$idx], $pwds[$idx], $app);
@@ -50,7 +50,7 @@ BEGIN { use_ok("Passwd::Keyring::Auto"); }
         ok( $pwds[$idx] eq $keyring1->get_password($users[$idx], $app));
     }
 
-    my $keyring2 = Passwd::Keyring::Auto::get_keyring();
+    my $keyring2 = Passwd::Keyring::Auto::get_keyring(app_name=>"Passwd::Keyring::Auto unit tests", group=>"test 50");
     foreach my $idx (0 .. $#users) {
         if($keyring2->is_persistent) {
             ok( $pwds[$idx] eq $keyring2->get_password($users[$idx], $app));

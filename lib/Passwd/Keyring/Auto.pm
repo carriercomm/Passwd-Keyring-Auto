@@ -11,11 +11,11 @@ Passwd::Keyring::Auto - interface to secure password storage(s)
 
 =head1 VERSION
 
-Version 0.22
+Version 0.23
 
 =cut
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 =head1 SYNOPSIS
 
@@ -29,17 +29,17 @@ considering the current desktop environment.
 
     use Passwd::Keyring::Auto qw(get_keyring);
 
-    my $keyring = get_keyring();
+    my $keyring = get_keyring(app=>"My super scraper", group=>"Social passwords");
 
     my $username = "someuser";
-    my $password = $keyring->get_password($username, "some-app");
+    my $password = $keyring->get_password($username, "mylostspace.com");
     if(! $password) {
         # ... somehow interactively prompt for password
-        $keyring->set_password($username, $password, "some-app");
+        $keyring->set_password($username, $password, "mylostspace.com");
     }
     login_somewhere_using($username, $password);
     if( password_was_wrong ) {
-        $keyring->clear_password($username, "some-app");
+        $keyring->clear_password($username, "mylostspace.com");
     }
 
 If any secure backend is available, password is preserved
@@ -59,27 +59,38 @@ get_keyring
 
 =head2 get_keyring
 
-Returns the keyring object most appropriate for the
-current system.
+    my $ring = get_keyring()
+
+    my $ring = get_keyring(app=>'symbolic application name', group=>'symbolic group/folder/.. name');
+
+    my $ring = get_keyring(app=>'...', group=>'...', %backend_specific_options);
+
+Returns the keyring object most appropriate for the current system. Passess all  options received
+to this backend. See L<Passwd::Keyring::KeyringAPI> for their semantic.
 
 =cut
 
 sub get_keyring {
+    my %options = @_;
     # FIXME: really detect and prioritize
 
     my $keyring;
     if( $ENV{GNOME_KEYRING_CONTROL} ) {
         eval {
             require Passwd::Keyring::Gnome;
-            $keyring = Passwd::Keyring::Gnome->new();
+            $keyring = Passwd::Keyring::Gnome->new(%options);
         };
         return $keyring if $keyring;
     }
 
     # Last resort
     require Passwd::Keyring::Memory;
-    return Passwd::Keyring::Memory->new();
+    return Passwd::Keyring::Memory->new(%options);
 }
+
+=head1 FURTHER INFORMATION
+
+L<Passwd::Keyring::KeyringAPI> describes backends API in detail.
 
 =head1 AUTHOR
 

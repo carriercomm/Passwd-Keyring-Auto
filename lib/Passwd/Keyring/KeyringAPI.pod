@@ -1,0 +1,173 @@
+=head1 Passwd::Keyring backend API
+
+=encoding utf8
+
+This document describes the API C<Passwd::Keyring::Something> modules
+should implement to be usable via C<Passwd::Keyring::Auto> and to be
+easily swappable.
+
+=head1 API
+
+=head2 Constructor
+
+    Passwd::Keyring::Backend->new();
+
+    Passwd::Keyring::Backend->new(app=>'some app', group=>'passwords group/folder', %other_args);
+
+The constructor initializes the backend, and constructs the object via
+which the further processing is to happen.
+
+The constructor should perform sufficient initialization to ensure it
+can work properly and B<should fail> (C<croak> or C<die>) in case
+given backend is not available (for example because some daemon is not
+running or some app not installed).
+
+=over
+
+The C<Passwd::Keyring::Auto> module may try loading and initiating a few keyring
+types, and settle on the first which loaded and constructed succesfully.
+
+=back
+
+Named arguments should be accepted and handled, but are all optional
+(the module should work without them providing some sane
+defaults). Two of those are standarized:
+
+=over
+
+=item C<app> - the name of the application using the library to store passwords
+
+=item C<group> - the name of folder/group/pack/...
+
+=back
+
+Both should be used, if possible, to label the passwords in secure
+storage, so the end user is able to recognize and identify them while
+using storage-specific interfaces (for example KWallet GUI or
+Seahorse). In case backend API has no such labelling, those params can
+be ignored.
+
+If they are missing, some sensible defaults should be applied (like
+C<Passwd::Keyring> for application name).
+
+Backend is free to handle any other named arguments, but should function
+properly if they are omitted.
+
+=head2 set_password
+
+    $keyring->set_password("John", "verysecret", "http://gmail.com");
+
+Persistently set and save the password (or update previously saved password).
+
+The method takes 3 arguments: 
+
+=over
+
+=item C<user_id> - in most cases actually the user login id of a kind, but in general any identifier allowing to distinguish between different users
+
+=item C<password> - the password itself
+
+=item C<password_domain> - indicator of the kind/target of the password. In (frequent) case of internet passwords, it can be the domain name of web application, but backend should not assume any specific format.
+
+=back
+
+In case underlying API places strict requirements on format of any of those values, the backend
+should appropriately modify them (escape, prefix, wrap, ...) to be as forgiving, as possible.
+
+The only strict requirement is that C<get_password> appropriately matches those operation, and
+that different C<user_id> or C<password_domain> leads to separate password.
+
+If possible, password should be labelled using parameters set in the constructor.
+
+=head2 get_password
+
+    $keyring->get_password("John", "some password identifier");
+
+Reads previously saved password. The routine takes two arguments:
+
+=over
+
+=item C<user_id>
+
+=item C<password_domain>
+
+=back
+
+and should recover the exact password which was saved with the same C<user_id> and C<password_domain>
+by earlier call to C<set_password>.
+
+In case no such password was saved, the method should return C<undef>.
+
+=over
+
+As secure storege APIs vary, we do not specify whether changing C<app> or C<folder>
+in constructor parameters may lead to separate password entry. It is recommended
+they are used only as labels.
+
+=back
+
+
+
+=head2 clear_password
+
+    $keyring->clear_password("John", "some password identifier");
+
+Remove previously saved password. The routine takes two arguments:
+
+=over
+
+=item C<user_id>
+
+=item C<password_domain>
+
+=back
+
+and should wipe password for this key if it is saved (and do nothing
+otherwise).
+
+=head2 is_persistent
+
+    if( $keyring->is_persistent() ) {
+        # ...
+    }
+
+This helper method should return 1 (or any true boolean value) if
+passwords are really saved persistently and will be available after
+the program is terminated.
+
+Most backends are expected to provide this guarantee (and return 1),
+emergency backends like C<Passwd::Kering::Memory> return 0.
+
+=head1 Work context
+
+=head2 Multiple objects per program
+
+If possible, keyring objects should behave I<sensibly> if more than
+one object is created within single program (do not crash, do not
+destroy data, share updates).
+
+If this is impossible or difficult, it is recommended to disallow
+creation many objects (throw an exception on attempt to create second
+one).
+
+=head2 Multithreading
+
+Single keyring object is not required to provide any multithreading
+guarantees, users are expected to perform appropriate locking.
+
+Separate keyring objects should function I<sensibly> when
+simultaneously used in different threads. If this is difficult, the
+backend should not allow to create many objects in single program.
+
+=head2 Multiple processes
+
+Keyring objects should work properly when a few processes try to use
+the same data simultaneously.
+
+=over
+
+In all practical cases this guarantee should be provided by underlying
+secure storage API.
+
+=back
+

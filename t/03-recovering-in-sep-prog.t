@@ -2,30 +2,39 @@
 
 use strict;
 use warnings;
-use Test::Simple tests => 6;
+use Test::Simple tests => 13;
 
 use Passwd::Keyring::Auto qw(get_keyring);
 
-my $ring = get_keyring();
+my $PSEUDO_DOMAIN = 'my@@domain';
+my $OTHER_DOMAIN = 'other domain';
+
+my $ring = get_keyring(app_name=>"Passwd::Keyring::Auto unit tests", group=>"test 02");
 
 ok( defined($ring),   'get_keyring() works' );
 
-ok( ! defined($ring->get_password("Paul", 'my@@domain')), "get for nonexistend passwd returns nothing");
+ok( ! defined($ring->get_password("Paul", $PSEUDO_DOMAIN)), "get works");
 
-ok( defined($ring->is_persistent), "keyring knows whether it is persistent");
+ok( $ring->get_password("Gregory", $PSEUDO_DOMAIN) eq 'secret-Greg', "get works");
 
-if($ring->is_persistent) {
+ok( $ring->get_password("Paul", $OTHER_DOMAIN) eq 'secret-Paul2', "get works");
 
-    ok( $ring->get_password("Gregory", 'my@@domain') eq 'secret-Greg', "get in new process recovers data");
-    ok( $ring->get_password("Paul", 'other@@domain') eq 'secret-Paul2', "get in new process recovers data");
-    ok( $ring->get_password("Duke", 'my@@domain') eq 'secret-Duke', "get in new process recovers data");
+ok( $ring->get_password("Duke", $PSEUDO_DOMAIN) eq 'secret-Duke', "get works");
 
-} else {
+ok( $ring->clear_password("Gregory", $PSEUDO_DOMAIN) eq 1, "clear clears");
 
-    ok( ! defined ($ring->get_password("Gregory", 'my@@domain')), "get in new process misses data for volatile ring");
-    ok( ! defined ($ring->get_password("Paul", 'other@@domain')), "get in new process misses data for volatile ring");
-    ok( ! defined ($ring->get_password("Duke", 'my@@domain')), "get in new process misses data for volatile ring");
+ok( ! defined($ring->get_password("Gregory", $PSEUDO_DOMAIN)), "clear cleared");
 
-}
+ok( $ring->get_password("Paul", $OTHER_DOMAIN) eq 'secret-Paul2', "get works");
+
+ok( $ring->get_password("Duke", $PSEUDO_DOMAIN) eq 'secret-Duke', "get works");
+
+ok( $ring->clear_password("Paul", $OTHER_DOMAIN) eq 1, "clear clears");
+
+ok( $ring->clear_password("Duke", $PSEUDO_DOMAIN) eq 1, "clear clears");
+
+ok( ! defined($ring->get_password("Paul", $PSEUDO_DOMAIN)), "clear cleared");
+ok( ! defined($ring->get_password("Duke", $PSEUDO_DOMAIN)), "clear cleared");
+
 
 

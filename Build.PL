@@ -7,14 +7,14 @@ my $builder = Module::Build->new(
     dynamic_config      => 1,
     license             => 'perl',
     requires            => {
-        'Passwd::Keyring::Memory' => '0.22',
+        'Passwd::Keyring::Memory' => '0.23',
     },
     build_requires => {
         'Test::More' => 0,
-        'Passwd::Keyring::Memory' => '0.2',
+        'Passwd::Keyring::Memory' => '0.23',
     },
     recommends          => {
-        'Passwd::Keyring::Gnome' => '0.22',
+        'Passwd::Keyring::Gnome' => '0.23',
     },
     dist_author         => q{Marcin Kasperski <Marcin.Kasperski@mekk.waw.pl>},
     dist_version_from   => 'lib/Passwd/Keyring/Auto.pm',

@@ -1,6 +1,7 @@
 Build.PL
 Changes
 lib/Passwd/Keyring/Auto.pm
+lib/Passwd/Keyring/KeyringAPI.pod
 Makefile.PL
 MANIFEST
 META.json
@@ -12,7 +13,6 @@ t/02-many-sets-and-gets.t
 t/03-recovering-in-sep-prog.t
 t/21-finds_proper_keyring.t
 t/50-keyring_ops.t
-t/99-cleanup.t
 t/boilerplate.t
 t/manifest.t
 t/pod-coverage.t

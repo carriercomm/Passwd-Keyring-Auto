@@ -7,7 +7,7 @@ use Test::Exception;
 
 BEGIN { use_ok("Passwd::Keyring::Auto", qw(get_keyring)) };
 
-my $ring = get_keyring();
+my $ring = get_keyring(app_name=>"Passwd::Keyring::Auto unit tests", group=>"test 21");
 ok($ring, "Got some keyring");
 
 # Under Gnome good keyring should be picked
