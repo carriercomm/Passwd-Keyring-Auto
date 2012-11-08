@@ -16,7 +16,7 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "Passwd::Keyring::Memory" : "0.23",
+            "Passwd::Keyring::Memory" : "0.24",
             "Test::More" : "0"
          }
       },
@@ -27,7 +27,8 @@
       },
       "runtime" : {
          "recommends" : {
-            "Passwd::Keyring::Gnome" : "0.23"
+            "Passwd::Keyring::Gnome" : "0.25",
+            "Passwd::Keyring::KDEWallet" : "0.20"
          },
          "requires" : {
             "Passwd::Keyring::Memory" : "0.23"
@@ -37,7 +38,7 @@
    "provides" : {
       "Passwd::Keyring::Auto" : {
          "file" : "lib/Passwd/Keyring/Auto.pm",
-         "version" : "0.24"
+         "version" : "0.25"
       }
    },
    "release_status" : "stable",
@@ -46,5 +47,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.24"
+   "version" : "0.25"
 }

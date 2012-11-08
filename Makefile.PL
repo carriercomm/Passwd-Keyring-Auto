@@ -9,7 +9,7 @@ WriteMakefile
           'VERSION_FROM' => 'lib/Passwd/Keyring/Auto.pm',
           'PREREQ_PM' => {
                            'Test::More' => 0,
-                           'Passwd::Keyring::Memory' => '0.23'
+                           'Passwd::Keyring::Memory' => '0.24'
                          }
         )
 ;

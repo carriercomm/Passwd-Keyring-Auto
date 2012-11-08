@@ -11,10 +11,11 @@ my $builder = Module::Build->new(
     },
     build_requires => {
         'Test::More' => 0,
-        'Passwd::Keyring::Memory' => '0.23',
+        'Passwd::Keyring::Memory' => '0.24',
     },
     recommends          => {
-        'Passwd::Keyring::Gnome' => '0.23',
+        'Passwd::Keyring::Gnome' => '0.25',
+        'Passwd::Keyring::KDEWallet' => '0.20',
     },
     dist_author         => q{Marcin Kasperski <Marcin.Kasperski@mekk.waw.pl>},
     dist_version_from   => 'lib/Passwd/Keyring/Auto.pm',

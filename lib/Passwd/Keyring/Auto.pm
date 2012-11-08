@@ -11,11 +11,11 @@ Passwd::Keyring::Auto - interface to secure password storage(s)
 
 =head1 VERSION
 
-Version 0.24
+Version 0.25
 
 =cut
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 =head1 SYNOPSIS
 
@@ -72,13 +72,24 @@ to this backend. See L<Passwd::Keyring::KeyringAPI> for their semantic.
 
 sub get_keyring {
     my %options = @_;
-    # FIXME: really detect and prioritize
 
     my $keyring;
-    if( $ENV{GNOME_KEYRING_CONTROL} ) {
+
+    if( $ENV{DISPLAY} || $ENV{DESKTOP_SESSION} ) {
+        # Looks like some *x desktop session, makes sense to try Gnome and KDE tools
+        # (note that KDEWallet may work also on non-KDE)
+
+        if( $ENV{GNOME_KEYRING_CONTROL} ) {
+            eval {
+                require Passwd::Keyring::Gnome;
+                $keyring = Passwd::Keyring::Gnome->new(%options);
+            };
+            return $keyring if $keyring;
+        }
+
         eval {
-            require Passwd::Keyring::Gnome;
-            $keyring = Passwd::Keyring::Gnome->new(%options);
+            require Passwd::Keyring::KDEWallet;
+            $keyring = Passwd::Keyring::KDEWallet->new(%options);
         };
         return $keyring if $keyring;
     }

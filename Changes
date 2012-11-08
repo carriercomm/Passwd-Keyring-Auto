@@ -1,5 +1,8 @@
 Revision history for Keyring::Auto
 
+0.25    2012-11-08
+        Added support for KDEWallet as alternative for Linux desktops.
+
 0.24    2012-11-08
         Clarifying meaning of app and group parameters.
 
