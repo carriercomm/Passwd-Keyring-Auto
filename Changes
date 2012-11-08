@@ -1,5 +1,8 @@
 Revision history for Keyring::Auto
 
+0.26    2012-11-08
+        Updated location of KeyringAPI document.
+
 0.25    2012-11-08
         Added support for KDEWallet as alternative for Linux desktops.
 

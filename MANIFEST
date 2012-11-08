@@ -1,7 +1,7 @@
 Build.PL
 Changes
 lib/Passwd/Keyring/Auto.pm
-lib/Passwd/Keyring/KeyringAPI.pod
+lib/Passwd/Keyring/Auto/KeyringAPI.pod
 Makefile.PL
 MANIFEST
 META.json

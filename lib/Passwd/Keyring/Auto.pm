@@ -11,11 +11,11 @@ Passwd::Keyring::Auto - interface to secure password storage(s)
 
 =head1 VERSION
 
-Version 0.25
+Version 0.26
 
 =cut
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 =head1 SYNOPSIS
 
@@ -66,7 +66,7 @@ get_keyring
     my $ring = get_keyring(app=>'...', group=>'...', %backend_specific_options);
 
 Returns the keyring object most appropriate for the current system. Passess all  options received
-to this backend. See L<Passwd::Keyring::KeyringAPI> for their semantic.
+to this backend. See L<Passwd::Keyring::Auto::KeyringAPI> for their semantic.
 
 =cut
 
@@ -101,7 +101,7 @@ sub get_keyring {
 
 =head1 FURTHER INFORMATION
 
-L<Passwd::Keyring::KeyringAPI> describes backends API in detail.
+L<Passwd::Keyring::Auto::KeyringAPI> describes backends API in detail.
 
 =head1 AUTHOR
 
