@@ -1,5 +1,8 @@
 Revision history for Keyring::Auto
 
+0.2601  2012-11-08
+        Small documentation fixes, more info in CPAN metadata
+
 0.26    2012-11-08
         Updated location of KeyringAPI document.
 

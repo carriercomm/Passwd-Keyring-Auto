@@ -14,6 +14,8 @@ t/03-recovering-in-sep-prog.t
 t/21-finds_proper_keyring.t
 t/50-keyring_ops.t
 t/boilerplate.t
+t/cpan-meta-json.t
+t/cpan-meta.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t

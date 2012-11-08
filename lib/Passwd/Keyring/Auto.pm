@@ -11,11 +11,11 @@ Passwd::Keyring::Auto - interface to secure password storage(s)
 
 =head1 VERSION
 
-Version 0.26
+Version 0.2601
 
 =cut
 
-our $VERSION = '0.26';
+our $VERSION = '0.2601';
 
 =head1 SYNOPSIS
 
@@ -105,12 +105,12 @@ L<Passwd::Keyring::Auto::KeyringAPI> describes backends API in detail.
 
 =head1 AUTHOR
 
-Marcin Kasperski, C<< <Marcin.Kasperski at mekk.waw.pl> >>
+Marcin Kasperski
 
 =head1 BUGS
 
 Please report any bugs or feature requests to 
-issue tracker at L<https://bitbucket.org/Mekk/perl-keyring>.
+issue tracker at L<https://bitbucket.org/Mekk/perl-keyring-auto>.
 
 =head1 SUPPORT
 
@@ -118,9 +118,13 @@ You can find documentation for this module with the perldoc command.
 
     perldoc Passwd::Keyring::Auto
 
-Source code is published and issues are tracked at:
+You can also look for information at:
 
-    L<https://bitbucket.org/Mekk/perl-keyring-auto>
+L<http://search.cpan.org/~mekk/Passwd-Keyring-Auto/>
+
+Source code is tracked at:
+
+L<https://bitbucket.org/Mekk/perl-keyring-auto>
 
 =head1 LICENSE AND COPYRIGHT
 

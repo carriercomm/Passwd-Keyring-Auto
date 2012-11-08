@@ -21,6 +21,15 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Passwd/Keyring/Auto.pm',
     add_to_cleanup      => [ 'Passwd-Keyring-Auto-*' ],
     create_makefile_pl => 'traditional',
+    meta_merge => {
+        keywords => [ qw/ passwords security secure-storage keyring / ],
+        resources => {
+            license     => 'http://dev.perl.org/licenses/',
+            homepage    => 'http://bitbucket.org/Mekk/perl-keyring-auto',
+            repository => 'http://bitbucket.org/Mekk/perl-keyring-auto',
+            bugtracker => 'https://bitbucket.org/Mekk/perl-keyring-auto/issues',
+        },
+    },
 );
 
 $builder->create_build_script();
