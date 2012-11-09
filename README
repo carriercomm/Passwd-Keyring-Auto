@@ -1,38 +1,87 @@
-Passwd::Keyring::Auto
+NAME
+    Passwd::Keyring::Auto - interface to secure password storage(s)
 
-Keyring makes it possible to securely preserve password in backends like
-Gnome Keyring, KDE Wallet, OSX/Keychain etc.
+VERSION
+    Version 0.2602
 
-While modules like Passwd::Keyring::Gnome handle specific backends, 
-Passwd::Keyring::Auto tries to pick the best backend available.
+SYNOPSIS
+    Passwd::Keyring is about securely preserving passwords and similar
+    sensitive data applications use in backends like Gnome Keyring, KDE
+    Wallet, OSX/Keychain etc.
 
-INSTALLATION
+    While modules like Passwd::Keyring::Gnome handle specific backends,
+    Passwd::Keyring::Auto tries to pick the best backend available,
+    considering the current desktop environment.
 
-To install this module, run the following commands:
+        use Passwd::Keyring::Auto qw(get_keyring);
 
-	perl Build.PL
-	./Build
-	./Build test
-	./Build install
+        my $keyring = get_keyring(app=>"My super scraper", group=>"Social passwords");
 
-SUPPORT AND DOCUMENTATION
+        my $username = "someuser";
+        my $password = $keyring->get_password($username, "mylostspace.com");
+        if(! $password) {
+            # ... somehow interactively prompt for password
+            $keyring->set_password($username, $password, "mylostspace.com");
+        }
+        login_somewhere_using($username, $password);
+        if( password_was_wrong ) {
+            $keyring->clear_password($username, "mylostspace.com");
+        }
 
-After installing, you can find documentation for this module with the
-perldoc command.
+    If any secure backend is available, password is preserved for successive
+    runs, and users need not be prompted.
 
-    perldoc Passwd::Keyring::Auto
+    Instead of auto-detection, one can also be explicit:
 
-You can also look for information at:
+        use Passwd::Keyring::Gnome;
+        my $keyring = Passwd::Keyring::Gnome->new();
+        # ... and so on
 
-    http://bitbucket.org/Mekk/perl-keyring-auto
+EXPORT
+    get_keyring
+
+SUBROUTINES/METHODS
+  get_keyring
+        my $ring = get_keyring()
+
+        my $ring = get_keyring(app=>'symbolic application name', group=>'symbolic group/folder/.. name');
+
+        my $ring = get_keyring(app=>'...', group=>'...', %backend_specific_options);
+
+    Returns the keyring object most appropriate for the current system.
+    Passess all options received to this backend. See
+    Passwd::Keyring::Auto::KeyringAPI for available operations on keyring
+    and their semantic.
+
+FURTHER INFORMATION
+    Passwd::Keyring::Auto::KeyringAPI describes backends API in detail.
+
+AUTHOR
+    Marcin Kasperski
+
+BUGS
+    Please report any bugs or feature requests to issue tracker at
+    https://bitbucket.org/Mekk/perl-keyring-auto.
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+        perldoc Passwd::Keyring::Auto
+
+    You can also look for information at:
+
+    http://search.cpan.org/~mekk/Passwd-Keyring-Auto/
+
+    Source code is tracked at:
+
+    https://bitbucket.org/Mekk/perl-keyring-auto
 
 LICENSE AND COPYRIGHT
+    Copyright 2012 Marcin Kasperski.
 
-Copyright (C) 2010 Marcin Kasperski
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of either: the GNU General Public License as published
+    by the Free Software Foundation; or the Artistic License.
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
+    See http://dev.perl.org/licenses/ for more information.
 

@@ -28,7 +28,7 @@
       },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.40"
+            "Module::Build" : "0.36"
          }
       },
       "runtime" : {
@@ -44,7 +44,7 @@
    "provides" : {
       "Passwd::Keyring::Auto" : {
          "file" : "lib/Passwd/Keyring/Auto.pm",
-         "version" : "0.2601"
+         "version" : "0.2602"
       }
    },
    "release_status" : "stable",
@@ -60,5 +60,5 @@
          "url" : "http://bitbucket.org/Mekk/perl-keyring-auto"
       }
    },
-   "version" : "0.2601"
+   "version" : "0.2602"
 }

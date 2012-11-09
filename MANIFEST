@@ -1,5 +1,6 @@
 Build.PL
 Changes
+INSTALL
 lib/Passwd/Keyring/Auto.pm
 lib/Passwd/Keyring/Auto/KeyringAPI.pod
 Makefile.PL

@@ -8,7 +8,7 @@ easily swappable.
 
 =head1 API
 
-=head2 Constructor
+=head2 new
 
     Passwd::Keyring::Backend->new();
 
@@ -56,6 +56,8 @@ the password in secure storage. Preferrable implementation is to
 use C<group> for folder name if secure storage has some notion
 of folders.
 
+Note also PARAMETER SYNTAX section below.
+
 If C<app> and/or C<group> are not specified, some sensible defaults
 should be applied (like C<Passwd::Keyring::Backend> for application name
 and C<Passwd::Keyring::Passwords> for group).
@@ -83,6 +85,7 @@ The method takes 3 arguments:
 
 In case underlying API places strict requirements on format of any of those values, the backend
 should appropriately modify them (escape, prefix, wrap, ...) to be as forgiving, as possible.
+Note also PARAMETER SYNTAX section below.
 
 The only strict requirement is that C<get_password> appropriately
 matches those operation, and that different C<user_id> or
@@ -117,7 +120,8 @@ and should recover the exact password which was saved with the same C<user_id> a
 
 In case no such password was saved, the method should return C<undef>.
 
-
+If C<set_password> performed any kind of escaping, C<get_password> should revert it's effects.
+Note also PARAMETER SYNTAX section below.
 
 =head2 clear_password
 
@@ -149,9 +153,25 @@ the program is terminated.
 Most backends are expected to provide this guarantee (and return 1),
 emergency backends like C<Passwd::Kering::Memory> return 0.
 
-=head1 Work context
+=head1 Additional requirements
 
-=head2 Multiple objects per program
+=head2 PARAMETER SYNTAX
+
+Keyring backends should be permissive with respect to application
+name, group name, username, password and password domain syntax.  This
+means escaping or replacing possibly illegal characters (for example,
+if some implementation dislikes C</> in password domain, it should
+escape it somehow).
+
+In particular, complete visible ASCII set (letters, digits, spaces,
+interpunction including slashes, dollars and hashes etc) should be
+accepted, and also non-latin letters.
+
+If there are serious limitations on length of those parameters,
+they should be carefully documented. By default it is assumed
+up to 256 chars can be used for any param.
+
+=head2 USING MULTIPLE KEYRINGS WITHIN ONE PROGRAM
 
 If possible, keyring objects should behave I<sensibly> if more than
 one object is created within single program (do not crash, do not
