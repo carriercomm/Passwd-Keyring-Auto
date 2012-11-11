@@ -50,7 +50,7 @@ app name, and recover using another app name, after all a few apps may
 share some password).
 
 C<group> should be used B<to separate the passwords> (entries for the
-password of the same user in the same domain, but with different
+password of the same user in the same realm, but with different
 C<group>, should be separate), and - if only possible - to label
 the password in secure storage. Preferrable implementation is to
 use C<group> for folder name if secure storage has some notion
@@ -79,7 +79,7 @@ The method takes 3 arguments:
 
 =item C<password> - the password itself
 
-=item C<password_domain> - indicator of the kind/target of the password. In (frequent) case of internet passwords, it can be the domain name of web application, but backend should not assume any specific format.
+=item C<realm> - indicator of the kind/target of the password. In (frequent) case of internet passwords, it can be the domain name of web application, but backend should not assume any specific format.
 
 =back
 
@@ -89,14 +89,14 @@ Note also PARAMETER SYNTAX section below.
 
 The only strict requirement is that C<get_password> appropriately
 matches those operation, and that different C<user_id> or
-C<password_domain> (or C<group> given in constructor) leads to
+C<realm> (or C<group> given in constructor) leads to
 separate password.
 
 If possible, password should be labelled using parameters set in the constructor.
 
 =over
 
-Actual key for the password should be built from C<group> given in C<new>, C<password_domain>
+Actual key for the password should be built from C<group> given in C<new>, C<realm>
 and C<user_id>. Changing any of those params should mean separate password.
 
 =back
@@ -111,11 +111,11 @@ Reads previously saved password. The routine takes two arguments:
 
 =item C<user_id>
 
-=item C<password_domain>
+=item C<realm>
 
 =back
 
-and should recover the exact password which was saved with the same C<user_id> and C<password_domain>
+and should recover the exact password which was saved with the same C<user_id> and C<realm>
 (and C<group>) by earlier call to C<set_password>.
 
 In case no such password was saved, the method should return C<undef>.
@@ -133,7 +133,7 @@ Remove previously saved password. The routine takes two arguments:
 
 =item C<user_id>
 
-=item C<password_domain>
+=item C<realm>
 
 =back
 
@@ -158,10 +158,10 @@ emergency backends like C<Passwd::Kering::Memory> return 0.
 =head2 PARAMETER SYNTAX
 
 Keyring backends should be permissive with respect to application
-name, group name, username, password and password domain syntax.  This
-means escaping or replacing possibly illegal characters (for example,
-if some implementation dislikes C</> in password domain, it should
-escape it somehow).
+name, group name, username, password and realm syntax.  This means
+escaping or replacing possibly illegal characters (for example, if
+some implementation dislikes C</> in realm, it should escape it
+somehow).
 
 In particular, complete visible ASCII set (letters, digits, spaces,
 interpunction including slashes, dollars and hashes etc) should be

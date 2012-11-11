@@ -15,13 +15,13 @@ ok( ref($ring) =~ /^Passwd::Keyring::/,   'get_keyring() makes keyrings' );
 my $USER = 'John';
 my $PASSWORD = 'verysecret';
 
-$ring->set_password($USER, $PASSWORD, 'my@@domain');
+$ring->set_password($USER, $PASSWORD, 'my@@realm');
 
 ok( 1, "set_password works" );
 
-ok( $ring->get_password($USER, 'my@@domain') eq $PASSWORD, "get recovers");
+ok( $ring->get_password($USER, 'my@@realm') eq $PASSWORD, "get recovers");
 
-ok( $ring->clear_password($USER, 'my@@domain') eq 1, "clear_password removed one password" );
+ok( $ring->clear_password($USER, 'my@@realm') eq 1, "clear_password removed one password" );
 
-ok( !defined($ring->get_password($USER, 'my@@domain')), "no password after clear");
+ok( !defined($ring->get_password($USER, 'my@@realm')), "no password after clear");
 

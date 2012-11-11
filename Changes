@@ -1,5 +1,25 @@
 Revision history for Keyring::Auto
 
+0.27	2012-11-11
+	Support for loading OSXKeychain backend on Mac OS/X (darwin) platform.
+
+	Added standalone non-trivial example.
+
+	get_keyring is exported by default.
+
+	Improved keyring selection code structure (introducing concept
+	of scoring etc)..
+
+        Handling PASSWD_KEYRING_AUTO_FORBID and PASSWD_KEYRING_AUTO_PREFER
+        environment variables.
+
+	Handling PASSWD_KEYRING_AUTO_DEBUG variable, if it is set, we
+	emit some diagnostics of what we pick.
+
+	Terminology fixes in docs and param names (realm instead of service/domain)
+
+	Recommended modules are picked according to the current platform.
+
 0.2602	2012-11-09
         Documentation updates
 

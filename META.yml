@@ -4,11 +4,12 @@ author:
   - 'Marcin Kasperski <Marcin.Kasperski@mekk.waw.pl>'
 build_requires:
   Passwd::Keyring::Memory: 0.24
+  Pod::Readme: 0
   Test::More: 0
 configure_requires:
   Module::Build: 0.36
 dynamic_config: 1
-generated_by: 'Module::Build version 0.4003, CPAN::Meta::Converter version 2.120921'
+generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.110440'
 keywords:
   - passwords
   - security
@@ -22,15 +23,15 @@ name: Passwd-Keyring-Auto
 provides:
   Passwd::Keyring::Auto:
     file: lib/Passwd/Keyring/Auto.pm
-    version: 0.2602
+    version: 0.27
 recommends:
   Passwd::Keyring::Gnome: 0.25
   Passwd::Keyring::KDEWallet: 0.20
 requires:
-  Passwd::Keyring::Memory: 0.23
+  Passwd::Keyring::Memory: 0.24
 resources:
   bugtracker: https://bitbucket.org/Mekk/perl-keyring-auto/issues
   homepage: http://bitbucket.org/Mekk/perl-keyring-auto
   license: http://dev.perl.org/licenses/
   repository: http://bitbucket.org/Mekk/perl-keyring-auto
-version: 0.2602
+version: 0.27

@@ -2,7 +2,7 @@ NAME
     Passwd::Keyring::Auto - interface to secure password storage(s)
 
 VERSION
-    Version 0.2602
+    Version 0.27
 
 SYNOPSIS
     Passwd::Keyring is about securely preserving passwords and similar
@@ -13,7 +13,7 @@ SYNOPSIS
     Passwd::Keyring::Auto tries to pick the best backend available,
     considering the current desktop environment.
 
-        use Passwd::Keyring::Auto qw(get_keyring);
+        use Passwd::Keyring::Auto;  # get_keyring
 
         my $keyring = get_keyring(app=>"My super scraper", group=>"Social passwords");
 
@@ -31,7 +31,10 @@ SYNOPSIS
     If any secure backend is available, password is preserved for successive
     runs, and users need not be prompted.
 
-    Instead of auto-detection, one can also be explicit:
+    The choice can be impacted by some environment variables, see
+    `get_keyring' documentation for details.
+
+    Finally, one can skip this module and be explicit:
 
         use Passwd::Keyring::Gnome;
         my $keyring = Passwd::Keyring::Gnome->new();
@@ -52,6 +55,18 @@ SUBROUTINES/METHODS
     Passess all options received to this backend. See
     Passwd::Keyring::Auto::KeyringAPI for available operations on keyring
     and their semantic.
+
+    Note: setting environment variable PASSWD_KEYRING_AUTO_DEBUG causes the
+    routine to print to stderr details about tried and selected keyrings.
+
+    The default choice can be influenced by environment variables:
+
+    - `PASSWD_KEYRING_AUTO_FORBID' - name or space separated names of
+    keyrings which can't be used, for example `Gnome' or `Gnome KDEWallet'
+    (note: Memory can't be forbidden, but is always last)
+
+    - `PASSWD_KEYRING_AUTO_PREFER' - name or space separated names of
+    keyrings to prefer
 
 FURTHER INFORMATION
     Passwd::Keyring::Auto::KeyringAPI describes backends API in detail.

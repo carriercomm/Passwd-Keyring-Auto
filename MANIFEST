@@ -8,6 +8,7 @@ MANIFEST
 META.json
 META.yml
 README
+sample/imap_query_sample.pl
 t/00-load.t
 t/01-set-and-get.t
 t/02-many-sets-and-gets.t

@@ -3,7 +3,7 @@ package Passwd::Keyring::Auto;
 use warnings;
 use strict;
 use base 'Exporter';
-our @EXPORT_OK = qw(get_keyring);
+our @EXPORT = qw(get_keyring);
 
 =head1 NAME
 
@@ -11,11 +11,11 @@ Passwd::Keyring::Auto - interface to secure password storage(s)
 
 =head1 VERSION
 
-Version 0.2602
+Version 0.27
 
 =cut
 
-our $VERSION = '0.2602';
+our $VERSION = '0.27';
 
 =head1 SYNOPSIS
 
@@ -27,7 +27,7 @@ While modules like Passwd::Keyring::Gnome handle specific backends,
 Passwd::Keyring::Auto tries to pick the best backend available,
 considering the current desktop environment.
 
-    use Passwd::Keyring::Auto qw(get_keyring);
+    use Passwd::Keyring::Auto;  # get_keyring
 
     my $keyring = get_keyring(app=>"My super scraper", group=>"Social passwords");
 
@@ -45,7 +45,10 @@ considering the current desktop environment.
 If any secure backend is available, password is preserved
 for successive runs, and users need not be prompted.
 
-Instead of auto-detection, one can also be explicit:
+The choice can be impacted by some environment variables,
+see C<get_keyring> documentation for details.
+
+Finally, one can skip this module and be explicit:
 
     use Passwd::Keyring::Gnome;
     my $keyring = Passwd::Keyring::Gnome->new();
@@ -65,37 +68,103 @@ get_keyring
 
     my $ring = get_keyring(app=>'...', group=>'...', %backend_specific_options);
 
-Returns the keyring object most appropriate for the current system. Passess all  options received
-to this backend. See L<Passwd::Keyring::Auto::KeyringAPI> for available operations on keyring
-and their semantic.
+Returns the keyring object most appropriate for the current
+system. Passess all options received to this backend. See
+L<Passwd::Keyring::Auto::KeyringAPI> for available operations on
+keyring and their semantic.
+
+Note: setting environment variable PASSWD_KEYRING_AUTO_DEBUG
+causes the routine to print to stderr details about tried and
+selected keyrings.
+
+The default choice can be influenced by environment variables:
+
+- C<PASSWD_KEYRING_AUTO_FORBID> - name or space separated names of keyrings
+  which can't be used, for example C<Gnome> or C<Gnome KDEWallet>
+  (note: Memory can't be forbidden, but is always last)
+
+- C<PASSWD_KEYRING_AUTO_PREFER> - name or space separated names of keyrings
+  to prefer
 
 =cut
 
 sub get_keyring {
     my %options = @_;
 
-    my $keyring;
+    my $debug = $ENV{PASSWD_KEYRING_AUTO_DEBUG} ? 1 : 0;
+
+    my @forbidden = split(/\s+/, $ENV{PASSWD_KEYRING_AUTO_FORBID} || '');
+    my @preferred = split(/\s+/, $ENV{PASSWD_KEYRING_AUTO_PREFER} || '');
+
+    #################################################################
+    # Selection and scoring of possible options.
+    #################################################################
+    
+    # Note: we prefer to check possibly wrong module than to
+    # miss it.
+
+    my %candidates =(  # name → score, score > 0 means possible
+        'Gnome' => 0,
+        'KDEWallet' => 0,
+        'OSXKeychain' => 0,
+        'Memory' => 1,
+        );
+
+    # Scoring: +100 for preferrable in given env, +10 for sensible,
+    # +1 for possible
+
+    if($^O eq 'darwin') {
+        $candidates{'OSXKeychain'} += 100;
+    }
 
     if( $ENV{DISPLAY} || $ENV{DESKTOP_SESSION} ) {
-        # Looks like some *x desktop session, makes sense to try Gnome and KDE tools
-        # (note that KDEWallet may work also on non-KDE)
+        $candidates{'KDEWallet'} += 11; # To give it some boost, more portable
+        $candidates{'Gnome'} += 10;
+    }
 
-        if( $ENV{GNOME_KEYRING_CONTROL} ) {
-            eval {
-                require Passwd::Keyring::Gnome;
-                $keyring = Passwd::Keyring::Gnome->new(%options);
-            };
-            return $keyring if $keyring;
-        }
+    if($ENV{GNOME_KEYRING_CONTROL}) {
+        $candidates{'Gnome'} += 100;
+    }
 
+    if($ENV{DBUS_SESSION_BUS_ADDRESS}) {
+        $candidates{'KDEWallet'} += 10;
+    }
+
+    $candidates{$_} += 1000 foreach (@preferred);
+    delete $candidates{$_} foreach (@forbidden);
+
+    my @attempts = grep { $candidates{$_} > 0 } keys %candidates;
+
+    @attempts = sort { ($candidates{$b} <=> $candidates{$a})
+                       || 
+                       ($a cmp $b)
+                   } @attempts;
+
+    if($debug) {
+        print STDERR "[Passwd::Keyring::Auto] Selected candidates(score): ",
+          join(", ", map { "$_($candidates{$_})" } @attempts), "\n";
+    }
+
+
+    foreach my $keyring_name (@attempts) {
+        my $keyring;
+        my $require = "Passwd/Keyring/$keyring_name.pm";
+        my $module = "Passwd::Keyring::$keyring_name";
         eval {
-            require Passwd::Keyring::KDEWallet;
-            $keyring = Passwd::Keyring::KDEWallet->new(%options);
+            require $require;
+            $keyring = $module->new(%options);
         };
+        if($debug) {
+            unless($@) {
+                print STDERR "[Passwd::Keyring::Auto] Succesfully initiated $keyring_name, returning it\n";
+            } else {
+                print STDERR "[Passwd::Keyring::Auto] Attempt to use $keyring_name failed, error: $@\n";
+            }
+        }
         return $keyring if $keyring;
     }
 
-    # Last resort
+    # Last resort if sth went wrong
     require Passwd::Keyring::Memory;
     return Passwd::Keyring::Memory->new(%options);
 }
