@@ -2,11 +2,12 @@
 
 use strict;
 use warnings;
-use Test::Simple tests => 6;
+use Test::More tests => 6;
 
 use Passwd::Keyring::Auto qw(get_keyring);
 
 my $ring = get_keyring(app_name=>"Passwd::Keyring::Auto unit tests", group=>"test 0");
+diag("Using " . ref($ring) . " keyring");
 
 ok( defined($ring),   'get_keyring() works' );
 

@@ -1,5 +1,11 @@
 Revision history for Keyring::Auto
 
+0.2701	2012-11-20
+	Fixed some test failures reported by cpantesters (removed
+        unneeded import of Test::Exception, added conditionals checking
+        whether loaded keyring is persistent and can be tested for data
+        recovery by separate object).
+
 0.27	2012-11-11
 	Support for loading OSXKeychain backend on Mac OS/X (darwin) platform.
 

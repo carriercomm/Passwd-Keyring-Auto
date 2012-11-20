@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Exception;
 
 BEGIN { use_ok("Passwd::Keyring::Auto"); }
 
@@ -51,17 +50,26 @@ BEGIN { use_ok("Passwd::Keyring::Auto"); }
     }
 
     my $keyring2 = Passwd::Keyring::Auto::get_keyring(app_name=>"Passwd::Keyring::Auto unit tests", group=>"test 50");
-    foreach my $idx (0 .. $#users) {
-        if($keyring2->is_persistent) {
-            ok( $pwds[$idx] eq $keyring2->get_password($users[$idx], $app));
-        } else {
+
+    is(ref($keyring2), ref($keyring1), "Got the same keyring on second invocation");
+
+  SKIP: {
+
+        skip "Using non-persistent keyring" unless $keyring2->is_persistent;
+
+        foreach my $idx (0 .. $#users) {
+            if($keyring2->is_persistent) {
+                ok( $pwds[$idx] eq $keyring2->get_password($users[$idx], $app));
+            } else {
+                ok( ! defined($keyring2->get_password($users[$idx], $app)));
+            }
+        }
+
+        $keyring1->clear_password($_, $app) foreach @users;
+        foreach my $idx (0 .. $#users) {
             ok( ! defined($keyring2->get_password($users[$idx], $app)));
         }
-    }
-
-    $keyring1->clear_password($_, $app) foreach @users;
-    foreach my $idx (0 .. $#users) {
-        ok( ! defined($keyring2->get_password($users[$idx], $app)));
+        
     }
 
 }

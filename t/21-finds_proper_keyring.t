@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Exception;
 
 BEGIN { use_ok("Passwd::Keyring::Auto", qw(get_keyring)) };
 
