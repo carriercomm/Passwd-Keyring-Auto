@@ -2,7 +2,7 @@ NAME
     Passwd::Keyring::Auto - interface to secure password storage(s)
 
 VERSION
-    Version 0.2701
+    Version 0.2702
 
 SYNOPSIS
     Passwd::Keyring is about securely preserving passwords and similar

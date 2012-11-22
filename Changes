@@ -1,5 +1,10 @@
 Revision history for Keyring::Auto
 
+0.2702	2012-11-22
+	Added empty package to make linking documentation on CPAN
+	easier, as suggested in first comment to
+	http://prepan.org/module/429En4oFfM
+
 0.2701	2012-11-20
 	Fixed some test failures reported by cpantesters (removed
         unneeded import of Test::Exception, added conditionals checking

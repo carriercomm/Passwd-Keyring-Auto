@@ -23,7 +23,10 @@ name: Passwd-Keyring-Auto
 provides:
   Passwd::Keyring::Auto:
     file: lib/Passwd/Keyring/Auto.pm
-    version: 0.2701
+    version: 0.2702
+  Passwd::Keyring::Auto::KeyringAPI:
+    file: lib/Passwd/Keyring/Auto/KeyringAPI.pm
+    version: 0
 recommends:
   Passwd::Keyring::Gnome: 0.25
   Passwd::Keyring::KDEWallet: 0.20
@@ -34,4 +37,4 @@ resources:
   homepage: http://bitbucket.org/Mekk/perl-keyring-auto
   license: http://dev.perl.org/licenses/
   repository: http://bitbucket.org/Mekk/perl-keyring-auto
-version: 0.2701
+version: 0.2702

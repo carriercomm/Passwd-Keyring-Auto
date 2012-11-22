@@ -45,7 +45,11 @@
    "provides" : {
       "Passwd::Keyring::Auto" : {
          "file" : "lib/Passwd/Keyring/Auto.pm",
-         "version" : "0.2701"
+         "version" : "0.2702"
+      },
+      "Passwd::Keyring::Auto::KeyringAPI" : {
+         "file" : "lib/Passwd/Keyring/Auto/KeyringAPI.pm",
+         "version" : 0
       }
    },
    "release_status" : "stable",
@@ -61,5 +65,5 @@
          "url" : "http://bitbucket.org/Mekk/perl-keyring-auto"
       }
    },
-   "version" : "0.2701"
+   "version" : "0.2702"
 }
