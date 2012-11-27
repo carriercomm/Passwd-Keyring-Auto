@@ -1,5 +1,10 @@
 Revision history for Keyring::Auto
 
+0.2703	2012-11-27
+	Better name for example, installing it in share dir
+	Dropping problematic tests. No way to guess whether KDEWallet is indeed
+	available.
+
 0.2702	2012-11-22
 	Added empty package to make linking documentation on CPAN
 	easier, as suggested in first comment to

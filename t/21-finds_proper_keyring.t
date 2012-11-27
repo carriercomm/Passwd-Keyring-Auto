@@ -8,7 +8,7 @@ BEGIN { use_ok("Passwd::Keyring::Auto", qw(get_keyring)) };
 
 # Under Gnome good keyring should be picked
 SKIP: {
-    skip "Not a Gnome session", 3 unless ($ENV{DESKTOP_SESSION} || '') =~ /^gnome$/i;
+    skip "Not a Gnome session", 3 unless ($ENV{DESKTOP_SESSION} || '') =~ /^(gnome.*|ubuntu)$/i;
     eval { require Passwd::Keyring::Gnome };
     skip "Passwd::Keyring::Gnome not installed", 3 if $@;
 
@@ -20,9 +20,24 @@ SKIP: {
     isa_ok($ring, "Passwd::Keyring::Gnome", "Under Gnome we should get Gnome keyring");
 }
 
-# Under linux we should get KDE Wallet if Gnome is not allowed
+# ... but not if it is forbidden
 SKIP: {
-    skip "Not a Linux desktop session", 3 unless $ENV{DESKTOP_SESSION};
+    skip "Not a Gnome session", 3 unless ($ENV{DESKTOP_SESSION} || '') =~ /^(gnome.*|ubuntu)$/i;
+    eval { require Passwd::Keyring::Gnome };
+    skip "Passwd::Keyring::Gnome not installed", 3 if $@;
+
+    local $ENV{PASSWD_KEYRING_AUTO_FORBID} = 'Gnome';
+
+    my $ring = get_keyring(app_name=>"Passwd::Keyring::Auto unit tests", group=>"Passwd::Keyring::Auto");
+    ok($ring, "Got some keyring");
+
+    unlike(ref($ring), qr/::Gnome$/, "We should respect FORBID under Gnome");
+}
+
+# Under KDE we should get KDE Wallet
+SKIP: {
+    skip "Not a KDE desktop session", 3 
+      unless ($ENV{DESKTOP_SESSION} || '') =~ /^kde/;
     eval { require Passwd::Keyring::KDEWallet };
     skip "Passwd::Keyring::KDEWallet not installed", 3 if $@;
 
@@ -33,22 +48,24 @@ SKIP: {
 
     ok($ring->is_persistent, "Under Linux desktop we should get persistent keyring");
 
-    isa_ok($ring, "Passwd::Keyring::KDEWallet", "Under Linux we should get KDE keyring if Gnome missing or forbidden");
+    isa_ok($ring, "Passwd::Keyring::KDEWallet", "Under KDE we should get KDE keyring");
 }
 
-# Under linux we should get KDE Wallet under non-gnome sessions
+# ... unless forbidden
 SKIP: {
-    skip "Not a Linux desktop session", 3 unless $ENV{DESKTOP_SESSION};
-    skip "Using Gnome or Ubuntu session", 3 if ($ENV{DESKTOP_SESSION} || '') =~ /^(gnome|ubuntu)$/i;
+    skip "Not a KDE desktop session", 3 
+      unless ($ENV{DESKTOP_SESSION} || '') =~ /^kde/;
     eval { require Passwd::Keyring::KDEWallet };
     skip "Passwd::Keyring::KDEWallet not installed", 3 if $@;
+
+    local $ENV{PASSWD_KEYRING_AUTO_FORBID} = 'KDEWallet';
 
     my $ring = get_keyring(app_name=>"Passwd::Keyring::Auto unit tests", group=>"Passwd::Keyring::Auto");
     ok($ring, "Got some keyring");
 
     ok($ring->is_persistent, "Under Linux desktop we should get persistent keyring");
 
-    isa_ok($ring, "Passwd::Keyring::KDEWallet", "Under Linux we should get KDE keyring under non-Gnome");
+    unlike(ref($ring), qr/::KDEWallet/, "We should respect FORBID under KDE");
 }
 
 SKIP: {

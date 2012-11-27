@@ -1,5 +1,6 @@
 Build.PL
 Changes
+example/imap_query_example.pl
 INSTALL
 lib/Passwd/Keyring/Auto.pm
 lib/Passwd/Keyring/Auto/KeyringAPI.pm
@@ -9,7 +10,6 @@ MANIFEST
 META.json
 META.yml
 README
-sample/imap_query_sample.pl
 t/00-load.t
 t/01-set-and-get.t
 t/02-many-sets-and-gets.t

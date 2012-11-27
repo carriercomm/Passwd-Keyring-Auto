@@ -11,11 +11,11 @@ Passwd::Keyring::Auto - interface to secure password storage(s)
 
 =head1 VERSION
 
-Version 0.2702
+Version 0.2703
 
 =cut
 
-our $VERSION = '0.2702';
+our $VERSION = '0.2703';
 
 =head1 SYNOPSIS
 

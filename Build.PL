@@ -34,6 +34,10 @@ my $builder = Module::Build->new(
     },
     recommends => \%recommends,
 
+    share_dir => {
+        dist => [ 'example' ],
+    },
+
     create_makefile_pl => 'traditional',
     add_to_cleanup      => [ 'Passwd-Keyring-Auto-*' ],
 
