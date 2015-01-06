@@ -4,7 +4,7 @@
       "Marcin Kasperski <Marcin.Kasperski@mekk.waw.pl>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Module::Build version 0.421",
    "keywords" : [
       "passwords",
       "security",
@@ -39,18 +39,18 @@
          },
          "requires" : {
             "File::ShareDir" : "1.00",
-            "Passwd::Keyring::Memory" : "0.24"
+            "Passwd::Keyring::Memory" : "0.24",
+            "perl" : "v5.6.0"
          }
       }
    },
    "provides" : {
       "Passwd::Keyring::Auto" : {
          "file" : "lib/Passwd/Keyring/Auto.pm",
-         "version" : "0.2703"
+         "version" : "0.2704"
       },
       "Passwd::Keyring::Auto::KeyringAPI" : {
-         "file" : "lib/Passwd/Keyring/Auto/KeyringAPI.pm",
-         "version" : 0
+         "file" : "lib/Passwd/Keyring/Auto/KeyringAPI.pm"
       }
    },
    "release_status" : "stable",
@@ -66,5 +66,5 @@
          "url" : "http://bitbucket.org/Mekk/perl-keyring-auto"
       }
    },
-   "version" : "0.2703"
+   "version" : "0.2704"
 }

@@ -11,7 +11,7 @@ if($^O =~ /^MSWin/) {
     # TODO: windows keyrings
 }
 
-if($^O !~ /^(MSWin|dos)/) {
+if($^O !~ /^(MSWin|dos|darwin)/) {
     $recommends{'Passwd::Keyring::Gnome'} = '0.25';
     $recommends{'Passwd::Keyring::KDEWallet'} = '0.20';
 }
@@ -23,6 +23,7 @@ my $builder = Module::Build->new(
 
     requires            => {
         'Passwd::Keyring::Memory' => '0.24',
+        'perl' => '5.6.0',   # let's believe perlver
     },
     build_requires => {
         'Test::More' => 0,

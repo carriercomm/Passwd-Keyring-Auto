@@ -1,5 +1,9 @@
 Revision history for Keyring::Auto
 
+0.2704	2015-01-06
+	Added kwalitee testing and making some tests happier. No functionality changes. 
+	Fixed recommended modules on OSX (no more KDE and Gnome recommendation there).
+
 0.2703	2012-11-27
 	Better name for example, installing it in share dir
 	Dropping problematic tests. No way to guess whether KDEWallet is indeed
