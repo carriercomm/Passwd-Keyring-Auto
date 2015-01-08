@@ -4,7 +4,7 @@
       "Marcin Kasperski <Marcin.Kasperski@mekk.waw.pl>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.421",
+   "generated_by" : "Module::Build version 0.4204",
    "keywords" : [
       "passwords",
       "security",
@@ -47,7 +47,7 @@
    "provides" : {
       "Passwd::Keyring::Auto" : {
          "file" : "lib/Passwd/Keyring/Auto.pm",
-         "version" : "0.2704"
+         "version" : "0.2801"
       },
       "Passwd::Keyring::Auto::KeyringAPI" : {
          "file" : "lib/Passwd/Keyring/Auto/KeyringAPI.pm"
@@ -66,5 +66,5 @@
          "url" : "http://bitbucket.org/Mekk/perl-keyring-auto"
       }
    },
-   "version" : "0.2704"
+   "version" : "0.2801"
 }

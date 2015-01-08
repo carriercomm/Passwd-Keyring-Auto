@@ -48,12 +48,13 @@ my $builder = Module::Build->new(
     meta_merge => {
         keywords => [ qw/ passwords security secure-storage keyring / ],
         resources => {
-            license     => 'http://dev.perl.org/licenses/',
+            license     => ['http://dev.perl.org/licenses/'],
             homepage    => 'http://bitbucket.org/Mekk/perl-keyring-auto',
             repository => 'http://bitbucket.org/Mekk/perl-keyring-auto',
             bugtracker => 'https://bitbucket.org/Mekk/perl-keyring-auto/issues',
         },
     },
+    # distmeta  => 1,
 );
 
 $builder->create_build_script();

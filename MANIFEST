@@ -14,13 +14,14 @@ t/00-load.t
 t/01-set-and-get.t
 t/02-many-sets-and-gets.t
 t/03-recovering-in-sep-prog.t
-t/21-finds_proper_keyring.t
+t/21-finds_proper_keyring_envs.t
+t/22-finds_proper_keyring_params.t
 t/50-keyring_ops.t
 t/boilerplate.t
 t/cpan-meta-json.t
 t/cpan-meta.t
+t/kwalitee.t
+t/kwalitee_extra.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
-t/kwalitee.t
-t/kwalitee_extra.t

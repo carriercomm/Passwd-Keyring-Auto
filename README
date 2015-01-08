@@ -1,25 +1,22 @@
 NAME
-
     Passwd::Keyring::Auto - interface to secure password storage(s)
 
 VERSION
-
-    Version 0.2704
+    Version 0.2801
 
 SYNOPSIS
-
-    Passwd::Keyring is about securely preserving passwords and similar
-    sensitive data applications use in backends like Gnome Keyring, KDE
-    Wallet, OSX/Keychain etc.
+    Passwd::Keyring is about securely preserving passwords and other
+    sensitive data (for example API keys, OAuth tokens etc) in backends like
+    Gnome Keyring, KDE Wallet, OSX/Keychain etc.
 
     While modules like Passwd::Keyring::Gnome handle specific backends,
     Passwd::Keyring::Auto tries to pick the best backend available,
     considering the current desktop environment.
 
         use Passwd::Keyring::Auto;  # get_keyring
-    
+
         my $keyring = get_keyring(app=>"My super scraper", group=>"Social passwords");
-    
+
         my $username = "someuser";
         my $password = $keyring->get_password($username, "mylostspace.com");
         if(! $password) {
@@ -31,64 +28,166 @@ SYNOPSIS
             $keyring->clear_password($username, "mylostspace.com");
         }
 
-    If any secure backend is available, password is preserved for
-    successive runs, and users need not be prompted.
+    If any secure backend is available, password is preserved for successive
+    runs, and user need not be prompted.
 
-    The choice can be impacted by some environment variables, see
-    get_keyring documentation for details.
+    The choice can be impacted by some environment variables and/or
+    additional parameters, see `get_keyring' documentation for details.
 
-    Finally, one can skip this module and be explicit:
+    One can skip this module and be explicit if he or she knows which
+    keyring is to be used:
 
         use Passwd::Keyring::Gnome;
         my $keyring = Passwd::Keyring::Gnome->new();
-        # ... and so on
+        # ... from there as above
 
 EXPORT
-
     get_keyring
 
 SUBROUTINES/METHODS
-
- get_keyring
-
+  get_keyring
         my $ring = get_keyring()
-    
-        my $ring = get_keyring(app=>'symbolic application name', group=>'symbolic group/folder/.. name');
-    
-        my $ring = get_keyring(app=>'...', group=>'...', %backend_specific_options);
 
-    Returns the keyring object most appropriate for the current system.
-    Passess all options received to this backend. See
-    Passwd::Keyring::Auto::KeyringAPI for available operations on keyring
-    and their semantic.
+        my $ring = get_keyring(app=>'MyApp', group=>'SyncPasswords');
 
-    Note: setting environment variable PASSWD_KEYRING_AUTO_DEBUG causes the
-    routine to print to stderr details about tried and selected keyrings.
+        my $ring = get_keyring(app=>'MyApp', group=>'Scrappers',
+                               prefer=>['Gnome', 'PWSafe3'],
+                               forbid=>['KDEWallet']);
 
-    The default choice can be influenced by environment variables:
+        my $ring = get_keyring(app=>'MyApp', group=>'Scrappers',
+                               force=>['KDEWallet']);
 
-    - PASSWD_KEYRING_AUTO_FORBID - name or space separated names of
-    keyrings which can't be used, for example Gnome or Gnome KDEWallet
-    (note: Memory can't be forbidden, but is always last)
+        my $ring = get_keyring(app=>'MyApp', group=>'SyncPasswords',
+                               %backend_specific_options);
 
-    - PASSWD_KEYRING_AUTO_PREFER - name or space separated names of
-    keyrings to prefer
+    Returns the keyring object most appropriate for the current system (and
+    matching specified criteria) and initiates it.
+
+    The function inspects context the application runs in (operating system,
+    presence of GUI sessions etc), decides which backends seem suitable and
+    in what order of preference, then tries all suitable backends and
+    returns first succesfully loaded and initialized.
+
+    All parameters are optional, but it is recommended to set app and group:
+
+    app => 'App Name'
+        Symbolic application name, which - depending on backend - may appear
+        in interactive prompts (like dialog box "Application APP-NAME wants
+        to access secure data..." popped up by KDE Wallet) and may be
+        preserved as comment ("Created by ...") in secure storage (so may be
+        seen in GUI password management apps like seahorse).
+
+    group => 'PasswordFolder'
+        The name of the passwords folder. Can be visualised as folder or
+        group by some GUIs (seahorse, pwsafe3) but it's most important role
+        is to let one separate passwords used for different purposes. A few
+        apps/scripts will share passwords if they use the same group name,
+        but will use different and unrelated passwords if they specify
+        different group.
+
+    force => 'Backend'
+        Try only given backend and nothing else. Expects short backend name.
+        For example `force=''Gnome'> means Passwd::Keyring::Gnome is to be
+        used and nothing else.
+
+    prefer=>'Backend' or prefer => ['Backend1', 'Backend2', ...]
+        Try this/those backends first, and in the specified order (and try
+        them even if by default they are not considered suitable for OS in
+        use).
+
+        For example `prefer='['OSXKeychain', 'KDEWallet']> asks module to
+        try Passwd::Keyring::OSXKeychain first, then
+        Passwd::Keyring::KDEWallet, then other options (if any) in module
+        own preference.
+
+    forbid=>'Backend' or forbid => ['Backend1', 'Backend2', ...]
+        Never use specified backend(s).
+
+        For example `forbid='['Gnome', 'KDEWallet']> will disable attempts
+        to use GUI keyrings even if we run on Linux and have Gnome or KDE
+        session active.
+
+    other parameters
+        All other parameters are passed as such to actual keyring backend.
+        To check whether/which may be used, consult backends documentation.
+        In general backends ignore params they do not know.
+
+    The function should not in normal circumstances fail (there always is
+    Passwd::Keyring::Memory to be used if everything else fails), but it may
+    croak if some keyring is enforced or if Memory is forbidden or
+    uninstalled.
+
+KEYRING METHODS
+    See Passwd::Keyring::Auto::KeyringAPI for operations available on
+    keyring objects.
+
+ENVIRONMENT VARIABLES
+    The following environment variables can be used to impact the module
+    behaviour:
+
+    `PASSWD_KEYRING_AUTO_FORCE'
+        Use given backend and nothing else. For example, by setting
+        `PASSWD_KEYRING_AUTO_FORCE=KDEWallet' user may enforce use of
+        Passwd::Keyring::KDEWallet.
+
+        This variable is completely ignored if `force' parameter was
+        specified, and causes runtime error if specified backend is not
+        present, not working, or present on the `forbid' list.
+
+    `PASSWD_KEYRING_AUTO_FORBID'
+        Space separated list of backends to forbid, for example
+        `PASSWD_KEYRING_AUTO_FORBID="Gnome KDEWallet"'.
+
+        Ignored if `force' parameter was specified, otherwise works as this
+        param.
+
+    `PASSWD_KEYRING_AUTO_PREFER'
+        Space separated names of backends to prefer.
+
+        Ignored if `prefer' parameter was specified, otherwise works as this
+        param.
+
+    The following variable provides some additional logging:
+
+    `PASSWD_KEYRING_AUTO_DEBUG'
+        Log on stderr details about tried and selected backends (and errors
+        faced while they are tried).
+
+BACKEND SELECTION AND PREFERENCE CRITERIA
+    By default (no `force', `prefer' or `forbid' params, no environment
+    variables) the following criteria are used (note that those may change
+    without warning and are described here just for illustration):
+
+    Linux/Unix
+        Passwd::Keyring::Gnome and Passwd::Keyring::KDEWallet are tried
+        first (if Gnome session is detected, Gnome version is first, under
+        KDE and in unclear context KDEWallet takes preference). If both
+        fail, emergency Passwd::Keyring::Memory is returned.
+
+    Mac OS/X
+        Passwd::Keyring::OSXKeychain is tried, if it does not work,
+        Passwd::Keyring::Memory is returned.
+
+    Windows
+        Currently Passwd::Keyring::Memory is always returned (this is to
+        change once Windows Vault backend is written).
+
+    Note: some backends are not considered unless asked for (for example
+    Passwd::Keyring::PWSafe3 is not currently considered by default
+    algorithm).
 
 FURTHER INFORMATION
-
-    Passwd::Keyring::Auto::KeyringAPI describes backends API in detail.
+    Passwd::Keyring::Auto::KeyringAPI describes methods available on keyring
+    objects and provides some additional detail on keyring construction.
 
 AUTHOR
-
     Marcin Kasperski
 
 BUGS
-
     Please report any bugs or feature requests to issue tracker at
     https://bitbucket.org/Mekk/perl-keyring-auto.
 
 SUPPORT
-
     You can find documentation for this module with the perldoc command.
 
         perldoc Passwd::Keyring::Auto
@@ -102,8 +201,7 @@ SUPPORT
     https://bitbucket.org/Mekk/perl-keyring-auto
 
 LICENSE AND COPYRIGHT
-
-    Copyright 2012 Marcin Kasperski.
+    Copyright 2012-2015 Marcin Kasperski.
 
     This program is free software; you can redistribute it and/or modify it
     under the terms of either: the GNU General Public License as published
